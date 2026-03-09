@@ -20,8 +20,10 @@ mvn exec:java -Dexec.mainClass=ru.commandproject.app.Main
 
 ## Запуск ручных тестов (Windows)
 ```bash
+chcp 65001
 mvn -q test
 java -cp "target/classes;target/test-classes" ru.commandproject.manual.BookBuilderManualTest
 java -cp "target/classes;target/test-classes" ru.commandproject.manual.BookCollectionManualTest
 java -cp "target/classes;target/test-classes" ru.commandproject.manual.ValidationManualTest
+java -cp "target/classes;target/test-classes" ru.commandproject.manual.AppLoopSmokeManualTest
 ```
