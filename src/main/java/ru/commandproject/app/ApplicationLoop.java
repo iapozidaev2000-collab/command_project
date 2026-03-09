@@ -30,8 +30,6 @@ public final class ApplicationLoop {
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
-                case "1" -> out.println("Функция добавления книги будет реализована в следующем MR.");
-                case "2" -> out.println("Функция просмотра книг будет реализована в следующем MR.");
                 case "0" -> running = false;
                 default -> out.println("Неизвестная команда. Повторите ввод.");
             }
@@ -43,8 +41,6 @@ public final class ApplicationLoop {
     private void printMenu() {
         out.println();
         out.println("==== Консоль книг ====");
-        out.println("1 - Добавить книгу");
-        out.println("2 - Показать книги");
         out.println("0 - Выход");
         out.print("Выберите пункт: ");
     }
