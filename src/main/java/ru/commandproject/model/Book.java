@@ -89,7 +89,7 @@ public final class Book {
         }
 
         public Book build() {
-            BookValidator.validateForBuild(pages, title, releaseDate);
+        //     BookValidator.validateForBuild(pages, title, releaseDate);
             return new Book(this);
         }
     }
