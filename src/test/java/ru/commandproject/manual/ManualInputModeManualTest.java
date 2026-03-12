@@ -11,36 +11,38 @@ import java.util.Iterator;
 public final class ManualInputModeManualTest {
 
     public static void main(String[] args) {
-        // 1. Подготавливаем файл для записи (в папке проекта)
+        // 1. Подготавливаем файл и писателя
         String testFilePath = "append.txt";
         AppendFileWriter writer = new AppendFileWriter(testFilePath);
 
-        // 2. Создаем экземпляр режима ввода
-        ManualInputMode inputMode = new ManualInputMode(writer);
+        // 2. Создаем режим ввода (теперь без writer в конструкторе, согласно новым правкам)
+        ManualInputMode inputMode = new ManualInputMode();
 
-        // 3. Создаем анонимную реализацию BookCollection для теста
-        // Замените на вашу реальную реализацию, если она готова
+        // 3. Создаем коллекцию для хранения данных в памяти
         BookCollection<Object> testCollection = createTestCollection();
 
-        System.out.println("=== Запуск ручного теста ManualInputMode ===");
+        System.out.println("=== Запуск ручного теста: Чтение -> Коллекция -> Файл ===");
 
-        // Тест 1: Ввод одиночного значения
-        System.out.println("\n--- Тест: Одиночное значение ---");
-        inputMode.inputSingleValue();
-
-        // Тест 2: Циклический ввод коллекции
-        System.out.println("\n--- Тест: Ввод коллекции (пишите 'exit' для выхода) ---");
+        // ТЕСТ 1: Заполнение коллекции вручную
+        // Теперь данные только попадают в testCollection, в файл пока ничего не пишется
         inputMode.startCollectionInput(testCollection);
 
-        // Тест 3: Сохранение всей накопленной коллекции
-        System.out.println("\n--- Тест: Сохранение всей коллекции разом ---");
-        inputMode.saveCurrentCollection("Финальный отчет", testCollection);
+        // ТЕСТ 2: Запись собранных данных в файл
+        // Вызываем сохранение явно через writer
+        System.out.println("\n--- Сохранение накопленных данных в файл ---");
+        writer.appendCollection("Результат ручного ввода", testCollection);
 
-        System.out.println("\nТест завершен. Проверьте файл: " + new File(testFilePath).getAbsolutePath());
+        // ТЕСТ 3: Проверка работы констант (запись без заголовка)
+        System.out.println("\n--- Тест: Запись с заголовком по умолчанию ---");
+        writer.appendCollection(testCollection);
+
+        System.out.println("\nТест завершен.");
+        System.out.println("Путь к файлу: " + new File(testFilePath).getAbsolutePath());
+        System.out.println("Проверьте, что в файле появились записи с заголовками 'Результат ручного ввода' и 'Отсортированная коллекция'.");
     }
 
     /**
-     * Вспомогательный метод для создания простейшей коллекции
+     * Анонимная реализация для теста
      */
     private static BookCollection<Object> createTestCollection() {
         return new BookCollection<Object>() {
@@ -55,8 +57,6 @@ public final class ManualInputModeManualTest {
             public Iterator<Object> iterator() {
                 return storage.iterator();
             }
-
-            // Если в вашем интерфейсе есть другие методы, их нужно переопределить здесь
         };
     }
 }
