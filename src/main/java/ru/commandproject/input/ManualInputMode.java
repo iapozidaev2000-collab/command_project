@@ -1,58 +1,53 @@
 package ru.commandproject.input;
+
 import ru.commandproject.collection.BookCollection;
-import ru.commandproject.output.AppendFileWriter;
 import java.util.Scanner;
 
 public class ManualInputMode {
     private final Scanner scanner;
-    private final AppendFileWriter writer;
 
-    public ManualInputMode(AppendFileWriter writer) {
+    public ManualInputMode() {
         this.scanner = new Scanner(System.in);
-        this.writer = writer;
     }
 
     /**
-     * Запускает цикл ручного ввода коллекции книг
+     * Читает данные из консоли и добавляет их в коллекцию.
+     * Запись в файл здесь больше не производится.
      */
     public void startCollectionInput(BookCollection<Object> collection) {
+        if (collection == null) {
+            System.err.println("Ошибка: коллекция не инициализирована.");
+            return;
+        }
+
         System.out.println("Введите данные книг (для завершения введите 'exit'):");
 
         while (true) {
-            System.out.print("Введите название или данные книги: ");
+            System.out.print("> ");
             String input = scanner.nextLine();
 
-            if ("exit".equalsIgnoreCase(input)) break;
+            if (input == null || "exit".equalsIgnoreCase(input.trim())) {
+                break;
+            }
 
-            // Добавляем в коллекцию (убедитесь, что у BookCollection есть метод add)
+            if (input.isBlank()) {
+                System.out.println("Пустая строка пропущена.");
+                continue;
+            }
+
+            // Только добавляем в оперативную память (в коллекцию)
             collection.add(input);
-
-            // Сразу дозаписываем в файл через ваш writer
-            writer.appendValue("Добавлена запись", input);
         }
 
-        System.out.println("Ввод завершен. Коллекция сохранена.");
+        System.out.println("Ввод завершен. Элементов добавлено: " + getCollectionSize(collection));
     }
 
     /**
-     * Позволяет ввести одиночное значение с заголовком
+     * Служебный метод для получения размера (если ваш интерфейс это позволяет)
      */
-    public void inputSingleValue() {
-        System.out.print("Введите заголовок для записи: ");
-        String title = scanner.nextLine();
-
-        System.out.print("Введите значение: ");
-        String value = scanner.nextLine();
-
-        writer.appendValue(title, value);
-        System.out.println("Запись добавлена в файл.");
-    }
-
-    /**
-     * Метод для записи всей текущей коллекции целиком
-     */
-    public void saveCurrentCollection(String title, BookCollection<?> collection) {
-        writer.appendCollection(title, collection);
-        System.out.println("Вся коллекция '" + title + "' успешно записана.");
+    private int getCollectionSize(BookCollection<?> collection) {
+        int count = 0;
+        for (Object ignored : collection) count++;
+        return count;
     }
 }
