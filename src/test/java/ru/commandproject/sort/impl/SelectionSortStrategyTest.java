@@ -1,5 +1,6 @@
 package ru.commandproject.sort.impl;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.commandproject.model.Book;
 
@@ -9,12 +10,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SortByTitleTest {
+class SelectionSortStrategyTest {
 
     @Test
     void shouldSortBooksByTitle() {
 
-        // подготовка данных - создает список книг
         List<Book> books = new ArrayList<>();
 
         books.add(Book.builder()
@@ -30,27 +30,24 @@ class SortByTitleTest {
                 .build());
 
         books.add(Book.builder()
-                .title("Робинзон крузо")
+                .title("Робинзон Крузо")
                 .pages(675)
                 .releaseDate(LocalDate.of(2022,2,10))
                 .build());
 
-        SortByTitle strategy = new SortByTitle();
+        SelectionSortStrategy strategy = new SelectionSortStrategy();
 
-        // сортируем книги по названию
         strategy.sort(books);
 
-        // проверяем порядок
         assertEquals("Властелин колец", books.get(0).getTitle());
-        assertEquals("Робинзон крузо", books.get(1).getTitle());
+        assertEquals("Робинзон Крузо", books.get(1).getTitle());
         assertEquals("Унесенные ветром", books.get(2).getTitle());
     }
 
-    // тест на пустой список
     @Test
     void shouldHandleEmptyList() {
         List<Book> books = new ArrayList<>();
-        SortByTitle strategy = new SortByTitle();
+        SelectionSortStrategy strategy = new SelectionSortStrategy();
         strategy.sort(books);
         assertEquals(0, books.size());
     }

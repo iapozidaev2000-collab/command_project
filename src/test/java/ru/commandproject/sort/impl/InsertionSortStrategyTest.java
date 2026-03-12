@@ -2,7 +2,6 @@ package ru.commandproject.sort.impl;
 
 import org.junit.jupiter.api.Test;
 import ru.commandproject.model.Book;
-import ru.commandproject.sort.impl.SortByPages;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SortByPagesTest {
+class InsertionSortStrategyTest {
 
     // тест на сортировку количества страниц по возрастанию
     @Test
@@ -37,7 +36,7 @@ class SortByPagesTest {
                 .releaseDate(LocalDate.of(2022,2,10))
                 .build());
 
-        SortByPages strategy = new SortByPages();
+        InsertionSortStrategy strategy = new InsertionSortStrategy();
 
         // выполняем сортировку - проверка метода
         strategy.sort(books);

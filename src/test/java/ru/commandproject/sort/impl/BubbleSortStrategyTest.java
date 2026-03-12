@@ -9,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SortByDateTest {
+class BubbleSortStrategyTest {
 
     // тест на книги упорядоченные по дате выхода
     @Test
@@ -36,7 +36,7 @@ class SortByDateTest {
                 .releaseDate(LocalDate.of(2021, 3, 22))
                 .build());
 
-        SortByDate strategy = new SortByDate();
+        BubbleSortStrategy strategy = new BubbleSortStrategy();
 
         // выполняем сортировку - проверка метода
         strategy.sort(books);
@@ -52,7 +52,7 @@ class SortByDateTest {
     void shouldHandleEmptyList() {
         List<Book> books = new ArrayList<>();
 
-        SortByDate strategy = new SortByDate();
+        BubbleSortStrategy strategy = new BubbleSortStrategy();
         strategy.sort(books);
 
         assertEquals(0, books.size());
@@ -70,7 +70,7 @@ class SortByDateTest {
                 .releaseDate(LocalDate.of(2023,1,1))
                 .build());
 
-        SortByDate strategy = new SortByDate();
+        BubbleSortStrategy strategy = new BubbleSortStrategy();
         strategy.sort(books);
 
         assertEquals(1, books.size());

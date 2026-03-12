@@ -2,9 +2,9 @@ package ru.commandproject.sort.comparator;
 
 import org.junit.jupiter.api.Test;
 import ru.commandproject.model.Book;
-import ru.commandproject.sort.impl.SortByPages;
-import ru.commandproject.sort.impl.SortByTitle;
-import ru.commandproject.sort.impl.SortByDate;
+import ru.commandproject.sort.impl.InsertionSortStrategy;
+import ru.commandproject.sort.impl.SelectionSortStrategy;
+import ru.commandproject.sort.impl.BubbleSortStrategy;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,12 +19,12 @@ class BookComparatorsTest {
     void shouldSortBooksByPagesUsingContext() {
         // создание книг
         List<Book> books = new ArrayList<>();
-        books.add(Book.builder().title("Властелин колец").pages(256).build());
-        books.add(Book.builder().title("Робинзон Крузо").pages(675).build());
-        books.add(Book.builder().title("Унесенные ветром").pages(456).build());
+        books.add(Book.builder().title("Властелин колец").pages(256).releaseDate(LocalDate.of(2021, 3, 5)).build());
+        books.add(Book.builder().title("Робинзон Крузо").pages(675).releaseDate(LocalDate.of(2025, 4, 9)).build());
+        books.add(Book.builder().title("Унесенные ветром").pages(456).releaseDate(LocalDate.of(2018, 4, 2)).build());
 
         BookComparators context = new BookComparators();
-        context.setSortStrategy(new SortByPages());
+        context.setSortStrategy(new InsertionSortStrategy());
 
         // сортировка
         context.sort(books);
@@ -39,12 +39,12 @@ class BookComparatorsTest {
     void shouldSortBooksByTitleUsingContext() {
         // создание книг
         List<Book> books = new ArrayList<>();
-        books.add(Book.builder().title("Властелин колец").pages(256).build());
-        books.add(Book.builder().title("Робинзон Крузо").pages(675).build());
-        books.add(Book.builder().title("Унесенные ветром").pages(456).build());
+        books.add(Book.builder().title("Властелин колец").pages(256).releaseDate(LocalDate.of(2021, 3, 5)).build());
+        books.add(Book.builder().title("Робинзон Крузо").pages(675).releaseDate(LocalDate.of(2025, 4, 9)).build());
+        books.add(Book.builder().title("Унесенные ветром").pages(456).releaseDate(LocalDate.of(2018, 4, 2)).build());
 
         BookComparators context = new BookComparators();
-        context.setSortStrategy(new SortByTitle());
+        context.setSortStrategy(new SelectionSortStrategy());
 
         // сортировка
         context.sort(books);
@@ -64,7 +64,7 @@ class BookComparatorsTest {
         books.add(Book.builder().title("Унесенные ветром").pages(149).releaseDate(LocalDate.of(2023,6,7)).build());
 
         BookComparators context = new BookComparators();
-        context.setSortStrategy(new SortByDate());
+        context.setSortStrategy(new BubbleSortStrategy());
 
         // сортировка
         context.sort(books);
