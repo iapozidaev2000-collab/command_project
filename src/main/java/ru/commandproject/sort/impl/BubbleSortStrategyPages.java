@@ -5,7 +5,7 @@ import ru.commandproject.sort.strategy.SortStrategy;
 
 import java.util.List;
 
-public class BubbleSortStrategy implements SortStrategy {
+public class BubbleSortStrategyPages implements SortStrategy {
 
     @Override
     public void sort(List<Book> books) {
@@ -18,7 +18,7 @@ public class BubbleSortStrategy implements SortStrategy {
                 Book current = books.get(j);
                 Book next = books.get(j + 1);
 
-                if (current.getReleaseDate().isAfter(next.getReleaseDate())) {
+                if (current.getPages() > (next.getPages())) {
 
                     books.set(j, next);
                     books.set(j + 1, current);

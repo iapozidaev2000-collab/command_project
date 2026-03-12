@@ -9,13 +9,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class InsertionSortStrategyTest {
+class BubbleSortStrategyPagesTest {
 
-    // тест на сортировку количества страниц по возрастанию
     @Test
     void shouldSortBooksByPages() {
 
-        // подготовка данных - создает список книг
         List<Book> books = new ArrayList<>();
 
         books.add(Book.builder()
@@ -36,12 +34,10 @@ class InsertionSortStrategyTest {
                 .releaseDate(LocalDate.of(2022,2,10))
                 .build());
 
-        InsertionSortStrategy strategy = new InsertionSortStrategy();
+        BubbleSortStrategyPages strategy = new BubbleSortStrategyPages();
 
-        // выполняем сортировку - проверка метода
         strategy.sort(books);
 
-        // вывод - проверяем результат
         assertEquals(256, books.get(0).getPages());
         assertEquals(456, books.get(1).getPages());
         assertEquals(675, books.get(2).getPages());

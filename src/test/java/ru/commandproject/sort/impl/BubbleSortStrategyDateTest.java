@@ -9,13 +9,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class BubbleSortStrategyTest {
+class BubbleSortStrategyDateTest {
 
-    // тест на книги упорядоченные по дате выхода
     @Test
     void shouldSortBooksByReleaseDate() {
 
-        // подготовка данных - создает список книг
         List<Book> books = new ArrayList<>();
 
         books.add(Book.builder()
@@ -36,29 +34,25 @@ class BubbleSortStrategyTest {
                 .releaseDate(LocalDate.of(2021, 3, 22))
                 .build());
 
-        BubbleSortStrategy strategy = new BubbleSortStrategy();
+        BubbleSortStrategyDate strategy = new BubbleSortStrategyDate();
 
-        // выполняем сортировку - проверка метода
         strategy.sort(books);
 
-        // вывод - проверяем результат
         assertEquals(LocalDate.of(2020,1,14), books.get(0).getReleaseDate());
         assertEquals(LocalDate.of(2021,3,22), books.get(1).getReleaseDate());
         assertEquals(LocalDate.of(2022,2,10), books.get(2).getReleaseDate());
     }
 
-    // тест на пустой список
     @Test
     void shouldHandleEmptyList() {
         List<Book> books = new ArrayList<>();
 
-        BubbleSortStrategy strategy = new BubbleSortStrategy();
+        BubbleSortStrategyDate strategy = new BubbleSortStrategyDate();
         strategy.sort(books);
 
         assertEquals(0, books.size());
     }
 
-    // тест на один элемент
     @Test
     void shouldHandleSingleBook() {
 
@@ -70,7 +64,7 @@ class BubbleSortStrategyTest {
                 .releaseDate(LocalDate.of(2023,1,1))
                 .build());
 
-        BubbleSortStrategy strategy = new BubbleSortStrategy();
+        BubbleSortStrategyDate strategy = new BubbleSortStrategyDate();
         strategy.sort(books);
 
         assertEquals(1, books.size());

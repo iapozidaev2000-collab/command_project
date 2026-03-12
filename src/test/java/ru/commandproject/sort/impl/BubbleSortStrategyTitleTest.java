@@ -1,6 +1,5 @@
 package ru.commandproject.sort.impl;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.commandproject.model.Book;
 
@@ -10,7 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class SelectionSortStrategyTest {
+class BubbleSortStrategyTitleTest {
 
     @Test
     void shouldSortBooksByTitle() {
@@ -35,7 +34,7 @@ class SelectionSortStrategyTest {
                 .releaseDate(LocalDate.of(2022,2,10))
                 .build());
 
-        SelectionSortStrategy strategy = new SelectionSortStrategy();
+        BubbleSortStrategyTitle strategy = new BubbleSortStrategyTitle();
 
         strategy.sort(books);
 
@@ -47,7 +46,7 @@ class SelectionSortStrategyTest {
     @Test
     void shouldHandleEmptyList() {
         List<Book> books = new ArrayList<>();
-        SelectionSortStrategy strategy = new SelectionSortStrategy();
+        BubbleSortStrategyTitle strategy = new BubbleSortStrategyTitle();
         strategy.sort(books);
         assertEquals(0, books.size());
     }
