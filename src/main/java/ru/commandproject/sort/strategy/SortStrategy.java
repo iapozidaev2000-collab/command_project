@@ -1,10 +1,10 @@
 package ru.commandproject.sort.strategy;
 
-import ru.commandproject.model.Book;
+import ru.commandproject.collection.BookCollection;
 
-import java.util.List;
+import java.util.Comparator;
 
-public interface SortStrategy {
+public interface SortStrategy<T> {
 
-    void sort(List<Book> books);
+    void sort(BookCollection<T> data, Comparator<T> comparator);
 }
