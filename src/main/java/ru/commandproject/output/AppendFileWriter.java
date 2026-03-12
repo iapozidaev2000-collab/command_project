@@ -15,44 +15,50 @@ public class AppendFileWriter {
         if (filePath == null || filePath.isBlank()) {
             throw new IllegalArgumentException("Путь к файлу не может быть пустым");
         }
-
         this.file = new File(filePath);
-
-        // Получаем родительскую папку (например, из "logs/app.log" получим "logs")
-        File parent = file.getParentFile();
-
-        // Если путь содержит папки и они еще не созданы — создаем их
-        if (parent != null && !parent.exists()) {
-            if (!parent.mkdirs()) {
-                throw new RuntimeException("Не удалось создать необходимые директории по пути: " + parent.getAbsolutePath());
-            }
-        }
-
-        // Дополнительная проверка: не является ли указанный путь уже существующей папкой
-        if (file.exists() && file.isDirectory()) {
-            throw new IllegalArgumentException("Указанный путь является директорией, а не файлом: " + filePath);
-        }
+        validateAndPreparePath();
     }
 
     public AppendFileWriter(Path filePath) {
+        if (filePath == null) {
+            throw new IllegalArgumentException("Path не может быть null");
+        }
         this.file = filePath.toFile();
+        validateAndPreparePath();
     }
 
+    private void validateAndPreparePath() {
+        File parent = file.getParentFile();
+        if (parent != null && !parent.exists()) {
+            if (!parent.mkdirs()) {
+                throw new RuntimeException("Не удалось создать директории: " + parent.getAbsolutePath());
+            }
+        }
+        if (file.exists() && file.isDirectory()) {
+            throw new IllegalArgumentException("Путь является директорией: " + file.getAbsolutePath());
+        }
+    }
     public void appendCollection(BookCollection<?> collection) {
         appendCollection(null, collection);
     }
 
     public void appendCollection(String title, BookCollection<?> collection) {
+        if (collection == null) {
+            System.err.println("Попытка записи null коллекции");
+            return;
+        }
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
             if (title != null) {
                 writer.write("=== " + title + " ===");
                 writer.newLine();
             }
 
-            // Проходим по всем элементам коллекции
             for (Object item : collection) {
-                writer.write(item.toString());
-                writer.newLine();
+                if (item != null) {
+                    writer.write(item.toString());
+                    writer.newLine();
+                }
             }
             writer.flush();
         } catch (IOException e) {
@@ -77,3 +83,4 @@ public class AppendFileWriter {
         }
     }
 }
+
