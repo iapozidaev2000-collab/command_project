@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.nio.file.Path;
 
 public class AppendFileWriter {
+    private static final String DEFAULT_COLLECTION_TITLE = "Отсортированная коллекция";
+    private static final String DEFAULT_VALUE_TITLE = "Найденное значение";
 
     private final File file;
+
     public AppendFileWriter(String filePath) {
         if (filePath == null || filePath.isBlank()) {
             throw new IllegalArgumentException("Путь к файлу не может быть пустым");
@@ -38,7 +41,9 @@ public class AppendFileWriter {
             throw new IllegalArgumentException("Путь является директорией: " + file.getAbsolutePath());
         }
     }
+
     public void appendCollection(BookCollection<?> collection) {
+        // Передаем null, чтобы сработала подстановка DEFAULT_COLLECTION_TITLE
         appendCollection(null, collection);
     }
 
@@ -48,11 +53,12 @@ public class AppendFileWriter {
             return;
         }
 
+        // Если заголовок не передан, берем дефолтный
+        String finalTitle = (title != null) ? title : DEFAULT_COLLECTION_TITLE;
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            if (title != null) {
-                writer.write("=== " + title + " ===");
-                writer.newLine();
-            }
+            writer.write("=== " + finalTitle + " ===");
+            writer.newLine();
 
             for (Object item : collection) {
                 if (item != null) {
@@ -67,14 +73,18 @@ public class AppendFileWriter {
     }
 
     public void appendValue(Object value) {
+        // Передаем null, чтобы сработала подстановка DEFAULT_VALUE_TITLE
         appendValue(null, value);
     }
 
     public void appendValue(String title, Object value) {
+        if (value == null) return;
+
+        // Если заголовок не передан, берем дефолтный
+        String finalTitle = (title != null) ? title : DEFAULT_VALUE_TITLE;
+
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            if (title != null) {
-                writer.write(title + ": ");
-            }
+            writer.write(finalTitle + ": ");
             writer.write(value.toString());
             writer.newLine();
             writer.flush();
@@ -83,4 +93,3 @@ public class AppendFileWriter {
         }
     }
 }
-
