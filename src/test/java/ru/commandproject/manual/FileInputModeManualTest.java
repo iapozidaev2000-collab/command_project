@@ -12,7 +12,7 @@ public final class FileInputModeManualTest {
         String testFilePath = "append.txt";
         AppendFileWriter writer = new AppendFileWriter(testFilePath);
 
-   
+
         ManualInputMode inputMode = new ManualInputMode();
 
         System.out.println("=== Запуск ручного теста: Чтение -> Коллекция -> Файл ===");
