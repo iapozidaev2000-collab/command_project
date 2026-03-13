@@ -12,13 +12,12 @@ public final class FileInputModeManualTest {
         String testFilePath = "append.txt";
         AppendFileWriter writer = new AppendFileWriter(testFilePath);
 
-        // Теперь работаем через интерфейсный метод read
+   
         ManualInputMode inputMode = new ManualInputMode();
 
         System.out.println("=== Запуск ручного теста: Чтение -> Коллекция -> Файл ===");
 
-        // Вызываем метод read(count), который теперь является основным
-        // Укажите количество элементов, которые хотите ввести (например, 3)
+
         BookCollection<Object> testCollection = inputMode.read(3);
 
         System.out.println("\n--- Сохранение накопленных данных в файл ---");
