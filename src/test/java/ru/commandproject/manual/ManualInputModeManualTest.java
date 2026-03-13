@@ -1,43 +1,54 @@
-package ru.commandproject.input;
+package ru.commandproject.manual;
 
 import ru.commandproject.collection.BookCollection;
+import ru.commandproject.input.ManualInputMode;
+import ru.commandproject.output.AppendFileWriter;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Scanner;
 
-public class ManualInputMode implements InputMode<Object> {
-    private final Scanner scanner;
+public final class ManualInputModeManualTest {
 
-    public ManualInputMode() {
-        this.scanner = new Scanner(System.in);
+    public static void main(String[] args) {
+        String testFilePath = "append.txt";
+        AppendFileWriter writer = new AppendFileWriter(testFilePath);
+
+        ManualInputMode inputMode = new ManualInputMode();
+
+        BookCollection<Object> testCollection = createTestCollection();
+
+        System.out.println("=== Запуск ручного теста: Чтение -> Коллекция -> Файл ===");
+
+        inputMode.startCollectionInput(testCollection);
+
+
+        System.out.println("\n--- Сохранение накопленных данных в файл ---");
+        writer.appendCollection("Результат ручного ввода", testCollection);
+
+        System.out.println("\n--- Тест: Запись с заголовком по умолчанию ---");
+        writer.appendCollection(testCollection);
+
+        System.out.println("\nТест завершен.");
+        System.out.println("Путь к файлу: " + new File(testFilePath).getAbsolutePath());
+        System.out.println("Проверьте, что в файле появились записи с заголовками 'Результат ручного ввода' и 'Отсортированная коллекция'.");
     }
 
-    @Override
-    public BookCollection<Object> read(int count) {
-        BookCollection<Object> collection = createCollection();
-        System.out.println("Режим ручного ввода. Нужно ввести элементов: " + count);
-        int added = 0;
-        while (added < count) {
-            System.out.print("[" + (added + 1) + "/" + count + "] > ");
-            String input = scanner.nextLine();
-            if (input == null || "exit".equalsIgnoreCase(input.trim())) break;
-            if (input.isBlank()) continue;
 
-            collection.add(input);
-            added++;
-        }
-        return collection;
-    }
-
-    private BookCollection<Object> createCollection() {
+    private static BookCollection<Object> createTestCollection() {
         return new BookCollection<Object>() {
             private final ArrayList<Object> storage = new ArrayList<>();
-            @Override public void add(Object e) { storage.add(e); }
-            @Override public Iterator<Object> iterator() { return storage.iterator(); }
+
+            @Override
+            public void add(Object element) {
+                storage.add(element);
+            }
+
+            @Override
+            public Iterator<Object> iterator() {
+                return storage.iterator();
+            }
         };
     }
-
-    public void startCollectionInput(BookCollection<Object> testCollection) {
-
-    }
 }
+
