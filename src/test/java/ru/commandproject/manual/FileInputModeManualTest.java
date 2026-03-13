@@ -31,3 +31,4 @@ public final class FileInputModeManualTest {
         System.out.println("Проверьте файл на наличие записей.");
     }
 }
+
