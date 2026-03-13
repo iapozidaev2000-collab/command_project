@@ -1,53 +1,40 @@
 package ru.commandproject.input;
 
 import ru.commandproject.collection.BookCollection;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
-public class ManualInputMode {
+public class ManualInputMode implements InputMode<Object> {
     private final Scanner scanner;
 
     public ManualInputMode() {
         this.scanner = new Scanner(System.in);
     }
 
-    /**
-     * Читает данные из консоли и добавляет их в коллекцию.
-     * Запись в файл здесь больше не производится.
-     */
-    public void startCollectionInput(BookCollection<Object> collection) {
-        if (collection == null) {
-            System.err.println("Ошибка: коллекция не инициализирована.");
-            return;
-        }
-
-        System.out.println("Введите данные книг (для завершения введите 'exit'):");
-
-        while (true) {
-            System.out.print("> ");
+    @Override
+    public BookCollection<Object> read(int count) {
+        BookCollection<Object> collection = createCollection();
+        System.out.println("Режим ручного ввода. Нужно ввести элементов: " + count);
+        int added = 0;
+        while (added < count) {
+            System.out.print("[" + (added + 1) + "/" + count + "] > ");
             String input = scanner.nextLine();
+            if (input == null || "exit".equalsIgnoreCase(input.trim())) break;
+            if (input.isBlank()) continue;
 
-            if (input == null || "exit".equalsIgnoreCase(input.trim())) {
-                break;
-            }
-
-            if (input.isBlank()) {
-                System.out.println("Пустая строка пропущена.");
-                continue;
-            }
-
-            // Только добавляем в оперативную память (в коллекцию)
             collection.add(input);
+            added++;
         }
-
-        System.out.println("Ввод завершен. Элементов добавлено: " + getCollectionSize(collection));
+        return collection;
     }
 
-    /**
-     * Служебный метод для получения размера (если ваш интерфейс это позволяет)
-     */
-    private int getCollectionSize(BookCollection<?> collection) {
-        int count = 0;
-        for (Object ignored : collection) count++;
-        return count;
+    private BookCollection<Object> createCollection() {
+        return new BookCollection<Object>() {
+            private final ArrayList<Object> storage = new ArrayList<>();
+            @Override public void add(Object e) { storage.add(e); }
+            @Override public Iterator<Object> iterator() { return storage.iterator(); }
+        };
     }
 }
+
