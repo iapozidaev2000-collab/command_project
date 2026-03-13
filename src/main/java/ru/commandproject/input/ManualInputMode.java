@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
-public class ManualInputMode implements InputMode<Object> {
+public final class ManualInputMode implements InputMode<Object> {
     private final Scanner scanner;
 
     public ManualInputMode() {
@@ -35,6 +35,10 @@ public class ManualInputMode implements InputMode<Object> {
             @Override public void add(Object e) { storage.add(e); }
             @Override public Iterator<Object> iterator() { return storage.iterator(); }
         };
+    }
+
+    public void startCollectionInput(BookCollection<Object> testCollection) {
+
     }
 }
 
