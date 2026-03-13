@@ -9,7 +9,12 @@ public class BubbleSortStrategy<T> implements SortStrategy<T> {
 
     @Override
     public void sort(BookCollection<T> data, Comparator<T> comparator) {
-
+        if (data == null) {
+            throw new IllegalArgumentException("Коллекция не может быть null!");
+        }
+        if (comparator == null) {
+            throw new IllegalArgumentException("Компоратор не может быть null!");
+        }
         int n = data.size();
 
         for (int i = 0; i < n - 1; i++) {

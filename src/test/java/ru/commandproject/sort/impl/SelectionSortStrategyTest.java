@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.commandproject.collection.BookCollection;
 import ru.commandproject.model.Book;
+import ru.commandproject.sort.comparator.BookComparators;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -40,7 +41,7 @@ class SelectionSortStrategyTest {
     @Test
     void shouldSortByPages() {
         SelectionSortStrategy<Book> strategy = new SelectionSortStrategy<>();
-        strategy.sort(books, Comparator.comparingInt(Book::getPages));
+        strategy.sort(books, BookComparators.BY_PAGES);
 
         assertEquals(256, books.get(0).getPages());
         assertEquals(456, books.get(1).getPages());
@@ -50,7 +51,7 @@ class SelectionSortStrategyTest {
     @Test
     void shouldSortByTitle() {
         SelectionSortStrategy<Book> strategy = new SelectionSortStrategy<>();
-        strategy.sort(books, Comparator.comparing(Book::getTitle));
+        strategy.sort(books, BookComparators.BY_TITLE);
 
         assertEquals("Властелин колец", books.get(0).getTitle());
         assertEquals("Робинзон Крузо", books.get(1).getTitle());
@@ -60,7 +61,7 @@ class SelectionSortStrategyTest {
     @Test
     void shouldSortByReleaseDate() {
         SelectionSortStrategy<Book> strategy = new SelectionSortStrategy<>();
-        strategy.sort(books, Comparator.comparing(Book::getReleaseDate));
+        strategy.sort(books, BookComparators.BY_DATE);
 
         assertEquals(LocalDate.of(2020, 1, 14), books.get(0).getReleaseDate());
         assertEquals(LocalDate.of(2021, 3, 22), books.get(1).getReleaseDate());

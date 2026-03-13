@@ -17,8 +17,4 @@ public final class BookValidator {
             throw new IllegalArgumentException("Поле \"Дата выхода\" обязательно");
         }
     }
-
-    public static boolean isValid(int pages, String title, LocalDate releaseDate) {
-        return pages > 0 && title != null && !title.isBlank() && releaseDate != null;
-    }
 }
