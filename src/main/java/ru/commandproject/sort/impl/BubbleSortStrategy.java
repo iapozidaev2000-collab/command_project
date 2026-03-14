@@ -13,7 +13,7 @@ public class BubbleSortStrategy<T> implements SortStrategy<T> {
             throw new IllegalArgumentException("Коллекция не может быть null!");
         }
         if (comparator == null) {
-            throw new IllegalArgumentException("Компоратор не может быть null!");
+            throw new IllegalArgumentException("Компаратор не может быть null!");
         }
         int n = data.size();
 

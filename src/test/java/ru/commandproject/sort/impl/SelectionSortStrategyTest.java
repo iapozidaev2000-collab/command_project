@@ -67,4 +67,31 @@ class SelectionSortStrategyTest {
         assertEquals(LocalDate.of(2021, 3, 22), books.get(1).getReleaseDate());
         assertEquals(LocalDate.of(2022, 2, 10), books.get(2).getReleaseDate());
     }
+
+    // сортировка пустой коллекции не ломается
+    @Test
+    void shouldHandleEmptyCollection() {
+        BookCollection<Book> emptyBooks = new BookCollection<>();
+        SelectionSortStrategy<Book> strategy = new SelectionSortStrategy<>();
+        strategy.sort(emptyBooks, BookComparators.BY_PAGES);
+
+        assertEquals(0, emptyBooks.size());
+    }
+
+    // сортировка коллекции с одним элементом
+    @Test
+    void shouldHandleSingleBook() {
+        BookCollection<Book> singleBook = new BookCollection<>();
+        singleBook.add(Book.builder()
+                .title("Единственная книга")
+                .pages(100)
+                .releaseDate(LocalDate.of(2023, 1, 1))
+                .build());
+
+        SelectionSortStrategy<Book> strategy = new SelectionSortStrategy<>();
+        strategy.sort(singleBook, BookComparators.BY_PAGES);
+
+        assertEquals(1, singleBook.size());
+        assertEquals("Единственная книга", singleBook.get(0).getTitle());
+    }
 }

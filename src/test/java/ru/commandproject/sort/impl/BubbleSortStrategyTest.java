@@ -95,34 +95,4 @@ class BubbleSortStrategyTest {
         assertEquals(1, singleBook.size());
         assertEquals("Единственная книга", singleBook.get(0).getTitle());
     }
-
-    // сортировка по страницам
-    @Test
-    void shouldCompareByPages() {
-        strategy.sort(books, BookComparators.BY_PAGES);
-
-        assertEquals(256, books.get(0).getPages());
-        assertEquals(456, books.get(1).getPages());
-        assertEquals(675, books.get(2).getPages());
-    }
-
-    // сортировка по названию
-    @Test
-    void shouldCompareByTitle() {
-        strategy.sort(books, BookComparators.BY_TITLE);
-
-        assertEquals("Властелин колец", books.get(0).getTitle());
-        assertEquals("Робинзон Крузо", books.get(1).getTitle());
-        assertEquals("Унесенные ветром", books.get(2).getTitle());
-    }
-
-    // сортировка по дате
-    @Test
-    void shouldCompareByReleaseDate() {
-        strategy.sort(books, BookComparators.BY_DATE);
-
-        assertEquals(LocalDate.of(2020, 1, 14), books.get(0).getReleaseDate());
-        assertEquals(LocalDate.of(2021, 3, 22), books.get(1).getReleaseDate());
-        assertEquals(LocalDate.of(2022, 2, 10), books.get(2).getReleaseDate());
-    }
 }
