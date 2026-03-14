@@ -30,7 +30,7 @@ public final class ManualInputMode implements InputMode<Object> {
             return new BookCollection<>();
         }
 
-        // 2. Создание стандартной коллекции (как просил наставник)
+        // 2. Создание стандартной коллекции
         BookCollection<Object> books = new BookCollection<>();
 
         out.println("(Введите 'exit' в любой момент для отмены)");
@@ -79,7 +79,7 @@ public final class ManualInputMode implements InputMode<Object> {
             try {
                 String input = getValidatedInput("Введите количество страниц: ");
                 // Используем проектный валидатор
-                return InputValidator.parsePositiveInt(input, "");
+                return InputValidator.parsePositiveInt(input, "Количество страниц");
             } catch (Exception e) {
                 out.println("Ошибка: " + e.getMessage());
             }
