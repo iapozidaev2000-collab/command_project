@@ -1,11 +1,8 @@
 package ru.commandproject.sort.comparator;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.commandproject.collection.BookCollection;
+
 import ru.commandproject.model.Book;
-import ru.commandproject.sort.impl.BubbleSortStrategy;
-import ru.commandproject.sort.strategy.SortStrategy;
 
 import java.time.LocalDate;
 
@@ -13,49 +10,53 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BookComparatorTest {
 
-    private BookCollection<Book> books;
-    private SortStrategy<Book> strategy;
-
-    @BeforeEach
-    void setUp() {
-        strategy = new BubbleSortStrategy<>();
-        books = new BookCollection<>();
-
-        books.add(Book.builder()
-                .title("Властелин колец").pages(256).releaseDate(LocalDate.of(2020, 1, 14)).build());
-        books.add(Book.builder()
-                .title("Робинзон Крузо").pages(675).releaseDate(LocalDate.of(2022, 2, 10)).build());
-        books.add(Book.builder()
-                .title("Унесенные ветром").pages(456).releaseDate(LocalDate.of(2021, 3, 22)).build());
+    private Book book(String title, int pages, LocalDate date) {
+        return Book.builder()
+                .title(title)
+                .pages(pages)
+                .releaseDate(date)
+                .build();
     }
 
-    // сортировка по страницам
+    // книга имеющая < страниц - меньше
+    // книга имеющая > страниц - больше
     @Test
-    void shouldCompareByPages() {
-        strategy.sort(books, BookComparators.BY_PAGES);
+    void shouldComparePagesCorrectly() {
 
-        assertEquals(256, books.get(0).getPages());
-        assertEquals(456, books.get(1).getPages());
-        assertEquals(675, books.get(2).getPages());
+        Book book1 = book("A",100,LocalDate.of(2020,1,1));
+        Book book2 = book("B",200,LocalDate.of(2021,1,1));
+
+        assertEquals(-1, Integer.signum(BookComparators.BY_PAGES.compare(book1, book2)));
+        assertEquals(1, Integer.signum(BookComparators.BY_PAGES.compare(book2, book1)));
     }
 
-    // сортировка по названию
+    // возвращает 0 если страницы равны
     @Test
-    void shouldCompareByTitle() {
-        strategy.sort(books, BookComparators.BY_TITLE);
+    void shouldReturnZeroIfPagesEqual() {
 
-        assertEquals("Властелин колец", books.get(0).getTitle());
-        assertEquals("Робинзон Крузо", books.get(1).getTitle());
-        assertEquals("Унесенные ветром", books.get(2).getTitle());
+        Book book1 = book("A",100,LocalDate.of(2020,1,1));
+        Book book2 = book("B",100,LocalDate.of(2021,1,1));
+
+        assertEquals(0, BookComparators.BY_PAGES.compare(book1, book2));
+    }
+
+    // сортировка по алфавиту
+    @Test
+    void shouldCompareTitlesCorrectly() {
+
+        Book book1 = book("A",100,LocalDate.of(2020,1,1));
+        Book book2 = book("B",200,LocalDate.of(2021,1,1));
+
+        assertEquals(-1, Integer.signum(BookComparators.BY_TITLE.compare(book1, book2)));
     }
 
     // сортировка по дате
     @Test
-    void shouldCompareByReleaseDate() {
-        strategy.sort(books, BookComparators.BY_DATE);
+    void shouldCompareDatesCorrectly() {
 
-        assertEquals(LocalDate.of(2020, 1, 14), books.get(0).getReleaseDate());
-        assertEquals(LocalDate.of(2021, 3, 22), books.get(1).getReleaseDate());
-        assertEquals(LocalDate.of(2022, 2, 10), books.get(2).getReleaseDate());
+        Book book1 = book("A",100,LocalDate.of(2020,1,1));
+        Book book2 = book("B",200,LocalDate.of(2021,1,1));
+
+        assertEquals(-1, Integer.signum(BookComparators.BY_DATE.compare(book1, book2)));
     }
 }
