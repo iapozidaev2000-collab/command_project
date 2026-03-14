@@ -88,7 +88,7 @@ public final class ManualInputMode implements InputMode<Object> {
     private String readTitle() throws InterruptedException {
         while (true) {
             String input = getValidatedInput("Введите название книги: ");
-            
+
             if (!input.isBlank()) return input;
             out.println("Ошибка: Название не может быть пустым.");
         }
@@ -98,14 +98,14 @@ public final class ManualInputMode implements InputMode<Object> {
         while (true) {
             try {
                 String input = getValidatedInput("Введите дату выхода (ГГГГ-ММ-ДД): ");
-                
+
                 return LocalDate.parse(input);
             } catch (DateTimeParseException e) {
                 out.println("Ошибка: Неверный формат даты (ГГГГ-ММ-ДД).");
             }
         }
     }
-    
+
     private BookCollection<Object> createEmptyCollection() {
         return new BookCollection<Object>() {
             private final ArrayList<Object> storage = new ArrayList<>();
