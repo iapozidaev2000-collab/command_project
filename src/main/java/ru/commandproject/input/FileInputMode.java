@@ -1,32 +1,57 @@
 package ru.commandproject.input;
 
 import ru.commandproject.collection.BookCollection;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import ru.commandproject.model.Book;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.stream.Stream;
+import java.util.Scanner;
 
 public final class FileInputMode implements InputMode<Object> {
-    private final String inputPath;
+    private final String filePath;
 
-    public FileInputMode(String inputPath) {
-        this.inputPath = inputPath;
+    public FileInputMode(String filePath) {
+        this.filePath = filePath;
     }
 
     @Override
     public BookCollection<Object> read(int count) {
         BookCollection<Object> collection = createCollection();
-        Path path = Path.of(inputPath);
+        File file = new File(filePath);
 
-        try (Stream<String> lines = Files.lines(path)) {
-            lines.filter(line -> !line.isBlank())
-                    .limit(count) // Используем count как лимит строк
-                    .forEach(collection::add);
-            System.out.println("Чтение из файла завершено.");
-        } catch (IOException e) {
-            System.err.println("Ошибка чтения: " + e.getMessage());
+        try (Scanner fileScanner = new Scanner(file)) {
+            int readCount = 0;
+            System.out.println("Чтение данных из файла: " + filePath);
+
+            while (fileScanner.hasNextLine() && readCount < count) {
+                String line = fileScanner.nextLine().trim();
+                if (line.isEmpty()) continue;
+
+                // Разделяем строку по точке с запятой
+                String[] parts = line.split(";");
+                if (parts.length == 3) {
+                    try {
+                        String title = parts[0].trim();
+                        int pages = Integer.parseInt(parts[1].trim());
+                        LocalDate date = LocalDate.parse(parts[2].trim());
+
+                        collection.add(Book.builder()
+                                .pages(pages)
+                                .title(title)
+                                .releaseDate(date)
+                                .build());
+                        readCount++;
+                    } catch (NumberFormatException | DateTimeParseException e) {
+                        System.out.println("Ошибка в строке: '" + line + "'. Пропуск.");
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Ошибка: Файл не найден по пути " + filePath);
         }
 
         return collection;
@@ -40,6 +65,20 @@ public final class FileInputMode implements InputMode<Object> {
         };
     }
 
-    public void execute(String inputPath) {
+    public void startCollectionInput(BookCollection<Object> testCollection) {
+        int limit = 10;
+        BookCollection<Object> result = read(limit);
+
+        int counter = 0;
+        for (Object book : result) {
+            testCollection.add(book);
+            counter++;
+        }
+
+        if (counter > 0) {
+            System.out.println("Файл успешно прочитан. Добавлено объектов: " + counter);
+        } else {
+            System.out.println("Данные не были загружены. Проверьте путь к файлу или его формат.");
+        }
     }
 }
