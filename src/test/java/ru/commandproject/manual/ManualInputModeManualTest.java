@@ -15,25 +15,22 @@ public final class ManualInputModeManualTest {
         AppendFileWriter writer = new AppendFileWriter(testFilePath);
 
         ManualInputMode inputMode = new ManualInputMode();
-
         BookCollection<Object> testCollection = createTestCollection();
 
         System.out.println("=== Запуск ручного теста: Чтение -> Коллекция -> Файл ===");
 
+        // Запуск ввода данных (используем метод, который мы заполнили ранее)
         inputMode.startCollectionInput(testCollection);
 
-
-        System.out.println("\n--- Сохранение накопленных данных в файл ---");
+        System.out.println("\n--- Сохранение данных в файл ---");
+        // Оставляем только одну запись в файл, чтобы избежать дубликатов
         writer.appendCollection("Результат ручного ввода", testCollection);
-
-        System.out.println("\n--- Тест: Запись с заголовком по умолчанию ---");
-        writer.appendCollection(testCollection);
 
         System.out.println("\nТест завершен.");
         System.out.println("Путь к файлу: " + new File(testFilePath).getAbsolutePath());
-        System.out.println("Проверьте, что в файле появились записи с заголовками 'Результат ручного ввода' и 'Отсортированная коллекция'.");
+        // Исправили текст сообщения, убрав упоминание сортировки
+        System.out.println("Проверьте, что в файле появились записи с заголовком 'Результат ручного ввода'.");
     }
-
 
     private static BookCollection<Object> createTestCollection() {
         return new BookCollection<Object>() {
