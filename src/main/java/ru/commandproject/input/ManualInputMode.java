@@ -3,11 +3,11 @@ package ru.commandproject.input;
 import ru.commandproject.collection.BookCollection;
 import ru.commandproject.model.Book;
 
+import ru.commandproject.validation.InputValidator;
+import ru.commandproject.util.DateParser;
+
 import java.io.PrintStream;
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Scanner;
 
 public final class ManualInputMode implements InputMode<Object> {
@@ -25,11 +25,13 @@ public final class ManualInputMode implements InputMode<Object> {
 
     @Override
     public BookCollection<Object> read(int count) {
+        // 1. Сначала проверка
         if (count <= 0) {
-            return createEmptyCollection();
+            return new BookCollection<>();
         }
 
-        BookCollection<Object> books = createEmptyCollection();
+        // 2. Создание стандартной коллекции (как просил наставник)
+        BookCollection<Object> books = new BookCollection<>();
 
         out.println("(Введите 'exit' в любой момент для отмены)");
 
@@ -76,21 +78,23 @@ public final class ManualInputMode implements InputMode<Object> {
         while (true) {
             try {
                 String input = getValidatedInput("Введите количество страниц: ");
-                int pages = Integer.parseInt(input);
-                if (pages > 0) return pages;
-                out.println("Ошибка: Число должно быть больше 0.");
-            } catch (NumberFormatException e) {
-                out.println("Ошибка: Введите целое число.");
+                // Используем проектный валидатор
+                return InputValidator.parsePositiveInt(input, "");
+            } catch (Exception e) {
+                out.println("Ошибка: " + e.getMessage());
             }
         }
     }
 
     private String readTitle() throws InterruptedException {
         while (true) {
-            String input = getValidatedInput("Введите название книги: ");
-
-            if (!input.isBlank()) return input;
-            out.println("Ошибка: Название не может быть пустым.");
+            try {
+                String input = getValidatedInput("Введите название книги: ");
+                // Используем проектный валидатор
+                return InputValidator.requireNonBlank(input, "Название не может быть пустым");
+            } catch (Exception e) {
+                out.println("Ошибка: " + e.getMessage());
+            }
         }
     }
 
@@ -98,19 +102,11 @@ public final class ManualInputMode implements InputMode<Object> {
         while (true) {
             try {
                 String input = getValidatedInput("Введите дату выхода (ГГГГ-ММ-ДД): ");
-
-                return LocalDate.parse(input);
-            } catch (DateTimeParseException e) {
-                out.println("Ошибка: Неверный формат даты (ГГГГ-ММ-ДД).");
+                // Используем проектный парсер
+                return DateParser.parse(input);
+            } catch (Exception e) {
+                out.println("Ошибка: Неверный формат даты.");
             }
         }
-    }
-
-    private BookCollection<Object> createEmptyCollection() {
-        return new BookCollection<Object>() {
-            private final ArrayList<Object> storage = new ArrayList<>();
-            @Override public void add(Object e) { storage.add(e); }
-            @Override public Iterator<Object> iterator() { return storage.iterator(); }
-        };
     }
 }
