@@ -1,4 +1,4 @@
-package ru.commandproject.manual.base;
+package ru.commandproject.manual;
 
 import ru.commandproject.collection.BookCollection;
 import ru.commandproject.input.FileInputMode;
@@ -39,7 +39,7 @@ public final class FileInputModeManualTest {
 
     private static void prepareTestData(String filePath) {
         try {
-            
+
             List<String> lines = List.of(
                     "Clean Code;450;2008-08-01",
                     "Design Patterns;395;1994-10-21",
