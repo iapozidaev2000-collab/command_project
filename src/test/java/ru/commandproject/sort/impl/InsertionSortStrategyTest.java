@@ -9,6 +9,7 @@ import ru.commandproject.sort.comparator.BookComparators;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InsertionSortStrategyTest {
 
@@ -91,5 +92,23 @@ class InsertionSortStrategyTest {
 
         assertEquals(1, singleBook.size());
         assertEquals("Единственная книга", singleBook.get(0).getTitle());
+    }
+
+    @Test
+    void shouldThrowExceptionIfCollectionIsNull() {
+        InsertionSortStrategy<Book> strategy = new InsertionSortStrategy<>();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                strategy.sort(null, BookComparators.BY_PAGES)
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionIfComparatorIsNull() {
+        InsertionSortStrategy<Book> strategy = new InsertionSortStrategy<>();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                strategy.sort(books, null)
+        );
     }
 }

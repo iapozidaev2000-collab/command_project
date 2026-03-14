@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class BubbleSortStrategyTest {
 
@@ -94,5 +95,19 @@ class BubbleSortStrategyTest {
 
         assertEquals(1, singleBook.size());
         assertEquals("Единственная книга", singleBook.get(0).getTitle());
+    }
+
+    @Test
+    void shouldThrowExceptionIfCollectionIsNull() {
+        assertThrows(IllegalArgumentException.class, () ->
+                strategy.sort(null, BookComparators.BY_PAGES)
+        );
+    }
+
+    @Test
+    void shouldThrowExceptionIfComparatorIsNull() {
+        assertThrows(IllegalArgumentException.class, () ->
+                strategy.sort(books, null)
+        );
     }
 }
