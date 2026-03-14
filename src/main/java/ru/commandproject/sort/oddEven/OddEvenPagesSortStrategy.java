@@ -1,46 +1,58 @@
 package ru.commandproject.sort.oddEven;
 
 import ru.commandproject.collection.BookCollection;
+import ru.commandproject.model.Book;
+import ru.commandproject.sort.comparator.BookComparators;
+import ru.commandproject.sort.impl.BubbleSortStrategy;
 import ru.commandproject.sort.strategy.SortStrategy;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
-import java.util.function.Function;
+import java.util.Objects;
 
-public class OddEvenPagesSortStrategy<T> implements SortStrategy<T> {
+public final class OddEvenPagesSortStrategy implements SortStrategy<Book> {
+    private final SortStrategy<Book> delegateStrategy;
 
-    private final Function<T, Integer> pagesExtractor;
+    public OddEvenPagesSortStrategy() {
+        this(new BubbleSortStrategy<>());
+    }
 
-    public OddEvenPagesSortStrategy(Function<T, Integer> pagesExtractor) {
-        this.pagesExtractor = pagesExtractor;
+    public OddEvenPagesSortStrategy(SortStrategy<Book> delegateStrategy) {
+        this.delegateStrategy = Objects.requireNonNull(
+                delegateStrategy,
+                "Базовый алгоритм сортировки не должен быть null"
+        );
+    }
+
+    public void sort(BookCollection<Book> data) {
+        sort(data, null);
     }
 
     @Override
-    public void sort(BookCollection<T> data, Comparator<T> comparator) {
+    public void sort(BookCollection<Book> data, Comparator<Book> comparator) {
         if (data == null) {
             throw new IllegalArgumentException("Коллекция не может быть null!");
         }
-        if (comparator == null) {
-            throw new IllegalArgumentException("Компаратор не может быть null!");
-        }
 
-        List<T> evenElements = new ArrayList<>();
+        BookCollection<Book> evenBooksCollection = new BookCollection<>();
 
         for (int i = 0; i < data.size(); i++) {
-            T element = data.get(i);
-            if (pagesExtractor.apply(element) % 2 == 0) {
-                evenElements.add(element);
+            Book book = data.get(i);
+            if (book.getPages() % 2 == 0) {
+                evenBooksCollection.add(book);
             }
         }
 
-        evenElements.sort(Comparator.comparingInt(pagesExtractor::apply));
+        if (comparator == null) {
+            delegateStrategy.sort(evenBooksCollection, BookComparators.BY_PAGES);
+        } else {
+            delegateStrategy.sort(evenBooksCollection, comparator);
+        }
 
         int index = 0;
-
         for (int i = 0; i < data.size(); i++) {
-            if (pagesExtractor.apply(data.get(i)) % 2 == 0) {
-                data.set(i, evenElements.get(index++));
+            Book book = data.get(i);
+            if (book.getPages() % 2 == 0) {
+                data.set(i, evenBooksCollection.get(index++));
             }
         }
     }

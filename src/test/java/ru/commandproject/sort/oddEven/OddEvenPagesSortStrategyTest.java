@@ -31,7 +31,7 @@ class OddEvenPagesSortStrategyTest {
         collection.add(Book.builder()
                 .title("G").pages(6).releaseDate(LocalDate.of(2008, 3, 6)).build());
 
-        OddEvenPagesSortStrategy<Book> strategy = new OddEvenPagesSortStrategy<>(Book::getPages);
+        OddEvenPagesSortStrategy strategy = new OddEvenPagesSortStrategy();
         strategy.sort(collection, BookComparators.BY_PAGES);
 
         assertEquals(7, collection.get(0).getPages());
