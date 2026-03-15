@@ -42,4 +42,14 @@ class OddEvenPagesSortStrategyTest {
         assertEquals(3, collection.get(5).getPages());
         assertEquals(10, collection.get(6).getPages());
     }
+
+    @Test
+    void shouldThrowExceptionIfCollectionIsNull() {
+
+        OddEvenPagesSortStrategy strategy = new OddEvenPagesSortStrategy();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                strategy.sort(null, BookComparators.BY_PAGES)
+        );
+    }
 }
