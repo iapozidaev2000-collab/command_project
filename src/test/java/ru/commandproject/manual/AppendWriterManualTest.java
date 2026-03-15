@@ -10,9 +10,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public final class AppendFileWriterManualTest extends BaseManualTest {
+public final class AppendWriterManualTest extends BaseManualTest {
     public static void main(String[] args) {
-        new AppendFileWriterManualTest().runAndReport();
+        new AppendWriterManualTest().runAndReport();
     }
 
     @Override
@@ -194,3 +194,4 @@ public final class AppendFileWriterManualTest extends BaseManualTest {
         }
     }
 }
+
