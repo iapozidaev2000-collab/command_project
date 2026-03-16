@@ -41,7 +41,7 @@ public final class OddEvenPagesSortStrategy implements SortStrategy<Book> {
             }
         }
 
-        delegateStrategy.sort(evenBooksCollection, comparator);
+        delegateStrategy.sort(evenBooksCollection, comparator );
 
         int index = 0;
         for (int i = 0; i < data.size(); i++) {
