@@ -2,7 +2,6 @@ package ru.commandproject.sort.oddEven;
 
 import ru.commandproject.collection.BookCollection;
 import ru.commandproject.model.Book;
-import ru.commandproject.sort.comparator.BookComparators;
 import ru.commandproject.sort.impl.BubbleSortStrategy;
 import ru.commandproject.sort.strategy.SortStrategy;
 
@@ -42,7 +41,7 @@ public final class OddEvenPagesSortStrategy implements SortStrategy<Book> {
             }
         }
 
-        delegateStrategy.sort(evenBooksCollection, BookComparators.BY_PAGES);
+        delegateStrategy.sort(evenBooksCollection, comparator);
 
         int index = 0;
         for (int i = 0; i < data.size(); i++) {
