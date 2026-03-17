@@ -1,12 +1,10 @@
 package ru.commandproject.sort.comparator;
 
 import ru.commandproject.model.Book;
-import ru.commandproject.sort.strategy.SortStrategy;
 
 import java.util.Comparator;
-import java.util.List;
 
-public class BookComparators {
+public final class BookComparators {
 
     public static final Comparator<Book> BY_TITLE =
             Comparator.comparing(Book::getTitle);
