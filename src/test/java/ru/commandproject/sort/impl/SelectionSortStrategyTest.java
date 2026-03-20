@@ -7,8 +7,6 @@ import ru.commandproject.model.Book;
 import ru.commandproject.sort.comparator.BookComparators;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
