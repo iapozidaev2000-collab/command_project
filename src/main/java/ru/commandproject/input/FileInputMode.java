@@ -2,83 +2,87 @@ package ru.commandproject.input;
 
 import ru.commandproject.collection.BookCollection;
 import ru.commandproject.model.Book;
+import ru.commandproject.util.DateParser;
+import ru.commandproject.validation.InputValidator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.stream.Stream;
 
-public final class FileInputMode implements InputMode<Object> {
-    private final String filePath;
+public final class FileInputMode implements InputMode<Book> {
+    private static final String FIELD_DELIMITER = ";";
+
+    private final Path filePath;
 
     public FileInputMode(String filePath) {
-        this.filePath = filePath;
+        this(Path.of(InputValidator.requireNonBlank(filePath, "Путь к файлу")));
+    }
+
+    public FileInputMode(Path filePath) {
+        this.filePath = Objects.requireNonNull(filePath, "Путь к файлу не должен быть null");
     }
 
     @Override
-    public BookCollection<Object> read(int count) {
-        BookCollection<Object> collection = createCollection();
-        File file = new File(filePath);
+    public BookCollection<Book> read(int count) {
+        InputValidator.requirePositive(count, "Количество элементов");
+        validateFilePath();
 
-        try (Scanner fileScanner = new Scanner(file)) {
-            int readCount = 0;
-            System.out.println("Чтение данных из файла: " + filePath);
+        try (Stream<String> lines = Files.lines(filePath, StandardCharsets.UTF_8)) {
+            BookCollection<Book> books = BookCollection.fromStream(
+                    toNumberedLines(lines)
+                            .filter(line -> !line.text().isBlank())
+                            .limit(count)
+                            .map(this::parseBook)
+            );
 
-            while (fileScanner.hasNextLine() && readCount < count) {
-                String line = fileScanner.nextLine().trim();
-                if (line.isEmpty()) continue;
-
-                // Разделяем строку по точке с запятой
-                String[] parts = line.split(";");
-                if (parts.length == 3) {
-                    try {
-                        String title = parts[0].trim();
-                        int pages = Integer.parseInt(parts[1].trim());
-                        LocalDate date = LocalDate.parse(parts[2].trim());
-
-                        collection.add(Book.builder()
-                                .pages(pages)
-                                .title(title)
-                                .releaseDate(date)
-                                .build());
-                        readCount++;
-                    } catch (NumberFormatException | DateTimeParseException e) {
-                        System.out.println("Ошибка в строке: '" + line + "'. Пропуск.");
-                    }
-                }
+            if (books.size() < count) {
+                throw new IllegalStateException(
+                        "В файле недостаточно записей. Запрошено: " + count + ", найдено: " + books.size()
+                );
             }
-        } catch (FileNotFoundException e) {
-            System.out.println("Ошибка: Файл не найден по пути " + filePath);
-        }
 
-        return collection;
+            return books;
+        } catch (IOException ex) {
+            throw new IllegalStateException("Не удалось прочитать файл: " + filePath, ex);
+        }
     }
 
-    private BookCollection<Object> createCollection() {
-        return new BookCollection<Object>() {
-            private final ArrayList<Object> storage = new ArrayList<>();
-            @Override public void add(Object e) { storage.add(e); }
-            @Override public Iterator<Object> iterator() { return storage.iterator(); }
-        };
+    private void validateFilePath() {
+        if (!Files.exists(filePath)) {
+            throw new IllegalArgumentException("Файл не найден: " + filePath);
+        }
+        if (Files.isDirectory(filePath)) {
+            throw new IllegalArgumentException("Указанный путь является директорией: " + filePath);
+        }
     }
 
-    public void startCollectionInput(BookCollection<Object> testCollection) {
-        int limit = 10;
-        BookCollection<Object> result = read(limit);
+    private Stream<SourceLine> toNumberedLines(Stream<String> lines) {
+        int[] lineNumber = {0};
+        return lines.map(line -> new SourceLine(++lineNumber[0], line.trim()));
+    }
 
-        int counter = 0;
-        for (Object book : result) {
-            testCollection.add(book);
-            counter++;
+    private Book parseBook(SourceLine line) {
+        String[] parts = line.text().split(FIELD_DELIMITER, -1);
+        if (parts.length != 3) {
+            throw new IllegalArgumentException(
+                    "Строка " + line.number() + " должна содержать 3 поля в формате pages;title;releaseDate"
+            );
         }
 
-        if (counter > 0) {
-            System.out.println("Файл успешно прочитан. Добавлено объектов: " + counter);
-        } else {
-            System.out.println("Данные не были загружены. Проверьте путь к файлу или его формат.");
+        try {
+            return Book.builder()
+                    .pages(InputValidator.parsePositiveInt(parts[0], "Количество страниц"))
+                    .title(InputValidator.requireNonBlank(parts[1], "Название"))
+                    .releaseDate(DateParser.parse(parts[2]))
+                    .build();
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Ошибка в строке " + line.number() + ": " + ex.getMessage(), ex);
         }
+    }
+
+    private record SourceLine(int number, String text) {
     }
 }
