@@ -19,6 +19,7 @@ public final class FileInputModeManualTest extends BaseManualTest {
     @Override
     protected void runTests() {
         shouldReadRequestedNumberOfBooksFromFile();
+        shouldReadBooksWhenHeaderExists();
         shouldIgnoreBlankLines();
         shouldThrowWhenFileHasTooFewRecords();
         shouldThrowForInvalidLineFormat();
@@ -56,6 +57,21 @@ public final class FileInputModeManualTest extends BaseManualTest {
         assertEquals(2, books.size(), "Пустые строки не должны считаться записями");
         assertEquals(320, books.get(0).getPages(), "Первая непустая строка должна быть считана");
         assertEquals(464, books.get(1).getPages(), "Вторая непустая строка должна быть считана");
+    }
+
+    private void shouldReadBooksWhenHeaderExists() {
+        Path file = writeTempFile(
+                "=== Коллекция книг ===",
+                "320;Clean Code;2008-08-01",
+                "464;Effective Java;2018-01-06"
+        );
+
+        FileInputMode inputMode = new FileInputMode(file);
+        BookCollection<Book> books = inputMode.read(2);
+
+        assertEquals(2, books.size(), "Заголовок должен игнорироваться при чтении");
+        assertEquals(320, books.get(0).getPages(), "Первая книга после заголовка должна быть считана");
+        assertEquals(464, books.get(1).getPages(), "Вторая книга после заголовка должна быть считана");
     }
 
     private void shouldThrowWhenFileHasTooFewRecords() {

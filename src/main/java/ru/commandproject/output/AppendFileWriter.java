@@ -1,6 +1,7 @@
 package ru.commandproject.output;
 
 import ru.commandproject.collection.BookCollection;
+import ru.commandproject.model.Book;
 import ru.commandproject.validation.InputValidator;
 
 import java.io.BufferedWriter;
@@ -12,7 +13,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Objects;
 
 public final class AppendFileWriter {
-    private static final String DEFAULT_COLLECTION_TITLE = "Отсортированная коллекция";
+    private static final String DEFAULT_COLLECTION_TITLE = "Коллекция книг";
     private static final String DEFAULT_VALUE_TITLE = "Найденное значение";
 
     private final Path filePath;
@@ -40,10 +41,8 @@ public final class AppendFileWriter {
                 return;
             }
 
-            int index = 1;
             for (Object item : collection) {
-                writeLine(writer, index + ". " + String.valueOf(item));
-                index++;
+                writeLine(writer, formatCollectionItem(item));
             }
             writeEmptyLine(writer);
         } catch (IOException ex) {
@@ -72,6 +71,13 @@ public final class AppendFileWriter {
 
     private void writeHeader(BufferedWriter writer, String title) throws IOException {
         writeLine(writer, "=== " + title + " ===");
+    }
+
+    private String formatCollectionItem(Object item) {
+        if (item instanceof Book book) {
+            return book.getPages() + ";" + book.getTitle() + ";" + book.getReleaseDate();
+        }
+        return String.valueOf(item);
     }
 
     private void writeLine(BufferedWriter writer, String value) throws IOException {

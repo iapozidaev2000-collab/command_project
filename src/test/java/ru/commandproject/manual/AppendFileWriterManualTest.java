@@ -17,7 +17,7 @@ public final class AppendFileWriterManualTest extends BaseManualTest {
 
     @Override
     protected void runTests() {
-        shouldAppendCollectionWithTitleAndNumbering();
+        shouldAppendCollectionWithTitleAndParsableRows();
         shouldAppendValueWithoutOverwritingPreviousContent();
         shouldWriteEmptyCollectionMessage();
         shouldUseDefaultTitlesForBlankInput();
@@ -28,7 +28,7 @@ public final class AppendFileWriterManualTest extends BaseManualTest {
         shouldRejectDirectoryPath();
     }
 
-    private void shouldAppendCollectionWithTitleAndNumbering() {
+    private void shouldAppendCollectionWithTitleAndParsableRows() {
         Path file = createTempFilePath("append-writer-collection");
 
         Book first = buildBook(320, "Clean Code", "2008-08-01");
@@ -45,10 +45,10 @@ public final class AppendFileWriterManualTest extends BaseManualTest {
 
         assertTrue(content.contains("=== Сортировка по страницам ==="),
                 "Файл должен содержать заголовок коллекции");
-        assertTrue(content.contains("1. " + first),
-                "Файл должен содержать первую книгу с номером 1");
-        assertTrue(content.contains("2. " + second),
-                "Файл должен содержать вторую книгу с номером 2");
+        assertTrue(content.contains("320;Clean Code;2008-08-01"),
+                "Файл должен содержать первую книгу в формате pages;title;releaseDate");
+        assertTrue(content.contains("464;Effective Java;2018-01-06"),
+                "Файл должен содержать вторую книгу в формате pages;title;releaseDate");
     }
 
     private void shouldAppendValueWithoutOverwritingPreviousContent() {
@@ -88,7 +88,7 @@ public final class AppendFileWriterManualTest extends BaseManualTest {
 
         String content = readFile(file);
 
-        assertTrue(content.contains("=== Отсортированная коллекция ==="),
+        assertTrue(content.contains("=== Коллекция книг ==="),
                 "Для пустой коллекции должен использоваться заголовок по умолчанию");
         assertTrue(content.contains("Коллекция пуста."),
                 "Файл должен содержать сообщение о пустой коллекции");
@@ -106,7 +106,7 @@ public final class AppendFileWriterManualTest extends BaseManualTest {
 
         String content = readFile(file);
 
-        assertTrue(content.contains("=== Отсортированная коллекция ==="),
+        assertTrue(content.contains("=== Коллекция книг ==="),
                 "Пустой заголовок коллекции должен заменяться значением по умолчанию");
         assertTrue(content.contains("=== Найденное значение ==="),
                 "Пустой заголовок значения должен заменяться значением по умолчанию");

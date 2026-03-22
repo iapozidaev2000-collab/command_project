@@ -34,6 +34,7 @@ public final class FileInputMode implements InputMode<Book> {
             BookCollection<Book> books = BookCollection.fromStream(
                     toNumberedLines(lines)
                             .filter(line -> !line.text().isBlank())
+                            .filter(line -> !isHeaderLine(line.text()))
                             .limit(count)
                             .map(this::parseBook)
             );
@@ -62,6 +63,10 @@ public final class FileInputMode implements InputMode<Book> {
     private Stream<SourceLine> toNumberedLines(Stream<String> lines) {
         int[] lineNumber = {0};
         return lines.map(line -> new SourceLine(++lineNumber[0], line.trim()));
+    }
+
+    private boolean isHeaderLine(String line) {
+        return line.startsWith("===") && line.endsWith("===");
     }
 
     private Book parseBook(SourceLine line) {
