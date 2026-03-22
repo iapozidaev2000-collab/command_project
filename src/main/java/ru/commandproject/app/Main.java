@@ -2,7 +2,7 @@ package ru.commandproject.app;
 
 import ru.commandproject.util.ConsoleIO;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.Scanner;
 
 public final class Main {
@@ -10,7 +10,7 @@ public final class Main {
     }
 
     public static void main(String[] args) {
-        try (Scanner scanner = new Scanner(System.in, StandardCharsets.UTF_8)) {
+        try (Scanner scanner = new Scanner(System.in, Charset.defaultCharset())) {
             ApplicationLoop applicationLoop = new ApplicationLoop(scanner);
             applicationLoop.run();
         }

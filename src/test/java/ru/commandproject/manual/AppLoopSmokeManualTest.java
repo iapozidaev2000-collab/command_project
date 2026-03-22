@@ -1,6 +1,7 @@
 package ru.commandproject.manual;
 
 import ru.commandproject.app.ApplicationLoop;
+import ru.commandproject.app.command.AppCommand;
 import ru.commandproject.util.ConsoleIO;
 
 import java.io.ByteArrayInputStream;
@@ -14,7 +15,7 @@ public final class AppLoopSmokeManualTest {
     }
 
     public static void main(String[] args) {
-        String input = "0\n";
+        String input = AppCommand.EXIT.code() + "\n";
         ByteArrayInputStream inBuffer = new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8));
         ByteArrayOutputStream outBuffer = new ByteArrayOutputStream();
 
@@ -26,7 +27,7 @@ public final class AppLoopSmokeManualTest {
 
         String output = outBuffer.toString(StandardCharsets.UTF_8);
         assertContains(output, "==== Консоль книг ====");
-        assertContains(output, "0 - Выход");
+        assertContains(output, AppCommand.EXIT.menuLine());
         assertContains(output, "Выход из программы.");
 
         ConsoleIO.out().println("Тест цикла приложения: УСПЕШНО");
