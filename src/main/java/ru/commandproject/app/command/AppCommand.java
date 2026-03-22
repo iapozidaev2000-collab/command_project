@@ -9,6 +9,7 @@ public enum AppCommand implements CodedMenuOption {
     SORT_EVEN_PAGES_ONLY("4", "Odd/Even сортировка по pages"),
     SAVE_COLLECTION_TO_FILE("5", "Записать коллекцию в файл"),
     COUNT_PAGES_OCCURRENCES("6", "Подсчитать вхождения pages"),
+    SAVE_FOUND_VALUE_TO_FILE("7", "Записать найденное значение в файл"),
     EXIT("0", "Выход");
 
     private final String code;

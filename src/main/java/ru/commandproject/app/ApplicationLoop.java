@@ -30,6 +30,8 @@ public final class ApplicationLoop {
     private final PrintStream out;
     private final OccurrenceCounterService occurrenceCounterService;
     private BookCollection<Book> books;
+    private Integer lastFoundPagesValue;
+    private Integer lastFoundPagesCount;
 
     public ApplicationLoop(Scanner scanner) {
         this(scanner, ConsoleIO.out(), new OccurrenceCounterService());
@@ -44,6 +46,8 @@ public final class ApplicationLoop {
         this.out = out;
         this.occurrenceCounterService = occurrenceCounterService;
         this.books = new BookCollection<>();
+        this.lastFoundPagesValue = null;
+        this.lastFoundPagesCount = null;
     }
 
     public void run() {
@@ -71,6 +75,7 @@ public final class ApplicationLoop {
                     case SORT_EVEN_PAGES_ONLY -> sortEvenPagesOnly();
                     case SAVE_COLLECTION_TO_FILE -> saveCollectionToFile();
                     case COUNT_PAGES_OCCURRENCES -> countPagesOccurrences();
+                    case SAVE_FOUND_VALUE_TO_FILE -> saveFoundValueToFile();
                     case EXIT -> running = false;
                 }
             } catch (IllegalStateException ex) {
@@ -93,6 +98,8 @@ public final class ApplicationLoop {
         InputMode<Book> inputMode = chooseInputMode();
 
         books = inputMode.read(count);
+        lastFoundPagesValue = null;
+        lastFoundPagesCount = null;
         out.println("Коллекция загружена. Размер: " + books.size());
     }
 
@@ -246,7 +253,30 @@ public final class ApplicationLoop {
             pagesCollection.add(book.getPages());
         }
 
-        occurrenceCounterService.countOccurrencesAndPrint(pagesCollection, targetPages, threadCount, out);
+        int foundCount = occurrenceCounterService.countOccurrencesAndPrint(
+                pagesCollection,
+                targetPages,
+                threadCount,
+                out
+        );
+        lastFoundPagesValue = targetPages;
+        lastFoundPagesCount = foundCount;
+    }
+
+    private void saveFoundValueToFile() {
+        if (lastFoundPagesValue == null || lastFoundPagesCount == null) {
+            out.println("Нет найденного значения для записи. Сначала выполните подсчет вхождений pages.");
+            return;
+        }
+
+        String path = readNonBlankLine("Введите путь к файлу для записи: ", "Путь к файлу");
+        out.print("Введите заголовок (можно оставить пустым): ");
+        String title = nextLineOrThrow();
+
+        String value = "pages=" + lastFoundPagesValue + ", количество вхождений=" + lastFoundPagesCount;
+        AppendFileWriter writer = new AppendFileWriter(path);
+        writer.appendValue(title, value);
+        out.println("Найденное значение записано в файл: " + path);
     }
 
     private int readPositiveInt(String prompt, String fieldName) {

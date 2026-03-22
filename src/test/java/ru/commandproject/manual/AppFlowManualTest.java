@@ -22,6 +22,7 @@ public final class AppFlowManualTest {
 
     public static void main(String[] args) {
         Path outputFile = createTempOutputFile();
+        Path foundValueFile = createTempOutputFile();
         String flowInput = String.join(System.lineSeparator(),
                 AppCommand.LOAD_COLLECTION.code(), // load
                 "2", // count
@@ -38,6 +39,9 @@ public final class AppFlowManualTest {
                 AppCommand.COUNT_PAGES_OCCURRENCES.code(), // count pages occurrences
                 "320", // target pages
                 "2", // threads
+                AppCommand.SAVE_FOUND_VALUE_TO_FILE.code(), // save found value to file
+                foundValueFile.toString(),
+                "Результат поиска",
                 AppCommand.SAVE_COLLECTION_TO_FILE.code(), // save to file
                 outputFile.toString(),
                 "Тестовая запись",
@@ -56,17 +60,21 @@ public final class AppFlowManualTest {
 
         String output = outBuffer.toString(StandardCharsets.UTF_8);
         String fileContent = readOutputFile(outputFile);
+        String foundValueFileContent = readOutputFile(foundValueFile);
 
         assertContains(output, "Коллекция загружена. Размер: 2");
         assertContains(output, "Сортировка выполнена.");
         assertContains(output, "Количество вхождений элемента \"320\": 1");
+        assertContains(output, "Найденное значение записано в файл:");
         assertContains(output, "Коллекция записана в файл:");
         assertContains(output, "Текущая коллекция:");
         assertContains(output, "Выход из программы.");
 
         assertContains(fileContent, "=== Тестовая запись ===");
-        assertContains(fileContent, "Clean Code");
-        assertContains(fileContent, "Effective Java");
+        assertContains(fileContent, "320;Clean Code;2008-08-01");
+        assertContains(fileContent, "464;Effective Java;2018-01-06");
+        assertContains(foundValueFileContent, "=== Результат поиска ===");
+        assertContains(foundValueFileContent, "pages=320, количество вхождений=1");
 
         ConsoleIO.out().println("Тест сценария приложения: УСПЕШНО");
     }
