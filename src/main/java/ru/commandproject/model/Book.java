@@ -56,7 +56,7 @@ public final class Book {
         return "Книга{"
                 + "страницы=" + pages
                 + ", название='" + title + '\''
-                + ", датаВыхода=" + releaseDate
+                + ", дата выхода=" + releaseDate
                 + '}';
     }
 
