@@ -56,15 +56,10 @@ mvn clean test
 ### PowerShell (Windows)
 ```powershell
 chcp 65001
-mvn -q -DskipTests clean package
-java --% -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -cp target/classes ru.commandproject.app.Main
-```
+[Console]::InputEncoding  = [System.Text.UTF8Encoding]::new($false)
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false)
 
-### CMD (Windows)
-```cmd
-chcp 65001
-mvn -q -DskipTests clean package
-java -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -cp target\classes ru.commandproject.app.Main
+java --% -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -cp target/classes ru.commandproject.app.Main
 ```
 
 ## Ручные тесты (при необходимости)
